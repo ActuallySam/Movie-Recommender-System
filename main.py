@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import json
 import bs4 as bs
-import urllib.request
+from urllib.request import Request, urlopen
 import pickle
 import requests
 
@@ -125,7 +125,9 @@ def recommend():
     cast_details = {cast_names[i]:[cast_ids[i], cast_profiles[i], cast_bdays[i], cast_places[i], cast_bios[i]] for i in range(len(cast_places))}
 
     # web scraping to get user reviews from IMDB site
-    sauce = urllib.request.urlopen('https://www.imdb.com/title/{}/reviews?ref_=tt_ov_rt'.format(imdb_id)).read()
+    url = 'https://www.imdb.com/title/{}/reviews?ref_=tt_ov_rt'.format(imdb_id)
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'})
+    sauce = urlopen(req).read()
     soup = bs.BeautifulSoup(sauce,'lxml')
     soup_result = soup.find_all("div",{"class":"text show-more__control"})
 
